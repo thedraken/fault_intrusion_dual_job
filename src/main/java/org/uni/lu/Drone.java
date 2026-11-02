@@ -1,7 +1,5 @@
 package org.uni.lu;
 
-import java.util.Random;
-
 public class Drone {
 
     private double faultyChance;
