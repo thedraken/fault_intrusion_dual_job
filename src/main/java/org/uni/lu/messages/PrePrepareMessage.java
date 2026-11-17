@@ -1,13 +1,17 @@
 package org.uni.lu.messages;
 
-import java.security.MessageDigest;
+import org.uni.lu.SenderType;
 
 public class PrePrepareMessage extends AbstractViewMessage {
 
     private final ClientRequestMessage requestMessage;
 
-    public PrePrepareMessage(long messageId, Long timeStamp, Long viewId, Long sequenceNumber, MessageDigest digest, ClientRequestMessage requestMessage) {
-        super(messageId, timeStamp, viewId, sequenceNumber, digest);
+    public PrePrepareMessage(Long messageId, Long timeStamp, Long senderId, SenderType senderType, Long viewId, Long sequenceNumber, String digest, ClientRequestMessage requestMessage) {
+        super(messageId, timeStamp, senderId, senderType, viewId, sequenceNumber, digest);
         this.requestMessage = requestMessage;
+    }
+
+    public ClientRequestMessage getRequestMessage() {
+        return requestMessage;
     }
 }

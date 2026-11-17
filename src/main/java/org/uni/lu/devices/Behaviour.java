@@ -1,8 +1,15 @@
 package org.uni.lu.devices;
 
+import org.uni.lu.AbstractSender;
+import org.uni.lu.Network;
 import org.uni.lu.RandomChecker;
+import org.uni.lu.messages.AbstractMessage;
+import org.uni.lu.messages.CommitMessage;
+import org.uni.lu.messages.PrepareMessage;
+import org.uni.lu.messages.ReplyMessage;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class Behaviour {
     private final RandomChecker randomChecker;
@@ -29,14 +36,51 @@ public class Behaviour {
         }
     }
 
-    public int returnFaultyResult(int realResult) {
-        if (behaviourType != BehaviourType.WRONG_RESULT) {
-            return realResult;
+    public Optional<AbstractMessage> apply(Network network, AbstractSender to, AbstractMessage message) {
+        switch (this.behaviourType) {
+            case SILENT -> {
+                return Optional.empty();
+            }
+            case WRONG_RESULT -> {
+                if (message instanceof ReplyMessage replyMessage) {
+                    if (randomChecker.RandomValue() > faultyChance) {
+                        return Optional.of(new ReplyMessage(replyMessage.getMessageId(),
+                                replyMessage.getTimeStamp(),
+                                replyMessage.getSenderId(),
+                                replyMessage.getSenderType(),
+                                replyMessage.getViewId(),
+                                replyMessage.getSequenceNumber(),
+                                replyMessage.getDigest(),
+                                replyMessage.getClientId(),
+                                replyMessage.getReplicaId(),
+                                (int) (randomChecker.RandomValue() * 100)
+                        ));
+                    }
+                }
+            }
+            case RANDOM_VOTES -> {
+                if (message instanceof PrepareMessage prepareMessage) {
+                    return Optional.of(new PrepareMessage(prepareMessage.getMessageId(),
+                            prepareMessage.getTimeStamp(),
+                            prepareMessage.getSenderId(),
+                            prepareMessage.getSenderType(),
+                            prepareMessage.getViewId(),
+                            prepareMessage.getSequenceNumber(),
+                            "",
+                            prepareMessage.getReplicaId()));
+                } else if (message instanceof CommitMessage commitMessage) {
+                    return Optional.of(new CommitMessage(commitMessage.getMessageId(),
+                            commitMessage.getTimeStamp(),
+                            commitMessage.getSenderId(),
+                            commitMessage.getSenderType(),
+                            commitMessage.getViewId(),
+                            commitMessage.getSequenceNumber(),
+                            "",
+                            commitMessage.getReplicaId()));
+                }
+            }
         }
-        if (faultyChance > 0 && randomChecker.RandomValue() < faultyChance) {
-            return (int) (randomChecker.RandomValue() * 100);
-        }
-        return realResult;
+        return Optional.of(message);
     }
 
     public enum BehaviourType {

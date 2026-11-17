@@ -1,5 +1,6 @@
 package org.uni.lu;
 
+import org.uni.lu.devices.Drone;
 import org.uni.lu.messages.AbstractMessage;
 
 import java.util.HashMap;
@@ -21,21 +22,22 @@ public class Network {
 
     public void send(AbstractSender fromDevice, AbstractSender sendToDevice, AbstractMessage message) {
         queuedMessages.putIfAbsent(sendToDevice, new LinkedList<>());
-        updateMessageSignature(fromDevice, message);
-        queuedMessages.get(sendToDevice).add(message);
+        if (fromDevice instanceof Drone drone) {
+            queuedMessages.get(sendToDevice).add(drone.getBehaviour().apply(this, sendToDevice, message).orElse(null));
+        } else {
+            queuedMessages.get(sendToDevice).add(message);
+        }
     }
 
     public void broadcast(AbstractSender fromDevice, AbstractMessage message) {
-        updateMessageSignature(fromDevice, message);
         queuedMessages.forEach((k, v) -> {
             if (k.getSenderType() == SenderType.DRONE) {
-                v.add(message);
+                if (fromDevice instanceof Drone drone) {
+                    v.add(drone.getBehaviour().apply(this, k, message).orElse(null));
+                } else {
+                    v.add(message);
+                }
             }
         });
-    }
-
-    private void updateMessageSignature(AbstractSender fromDevice, AbstractMessage message) {
-        message.setSenderId(fromDevice.getId());
-        message.setSenderType(fromDevice.getSenderType());
     }
 }

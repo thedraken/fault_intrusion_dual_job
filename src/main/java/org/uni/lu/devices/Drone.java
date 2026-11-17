@@ -3,7 +3,6 @@ package org.uni.lu.devices;
 import org.uni.lu.AbstractSender;
 import org.uni.lu.SenderType;
 import org.uni.lu.messages.AbstractMessage;
-import org.uni.lu.messages.ClientRequestMessage;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,19 +19,6 @@ public class Drone extends AbstractSender {
         this.behaviour = startingBehaviour;
     }
 
-    public int processClientRequest(ClientRequestMessage clientRequestMessage) {
-        this.messagesReceived.add(clientRequestMessage);
-        int result = clientRequestMessage.getFunction().solve();
-        return switch (this.behaviour.getBehaviourType()) {
-            case HONEST, EQUIVOCATING, RANDOM_VOTES -> result;
-            case SILENT ->
-                //silence handling...
-                //TODO handle silent result...
-                    -1;
-            case WRONG_RESULT -> this.behaviour.returnFaultyResult(result);
-        };
-    }
-
     public void updateBehaviour(Behaviour.BehaviourType behaviourType) {
         this.behaviour.setBehaviourType(behaviourType);
     }
@@ -43,5 +29,9 @@ public class Drone extends AbstractSender {
 
     public Set<AbstractMessage> getMessagesReceived() {
         return messagesReceived;
+    }
+
+    public Behaviour getBehaviour() {
+        return behaviour;
     }
 }

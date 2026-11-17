@@ -10,12 +10,14 @@ public abstract class AbstractMessage {
      * A counter that increases to show the passage of time
      */
     private final Long timeStamp;
-    private Long senderId;
-    private SenderType senderType;
+    private final Long senderId;
+    private final SenderType senderType;
 
-    public AbstractMessage(Long messageId, Long timeStamp) {
+    public AbstractMessage(Long messageId, Long timeStamp, Long senderId, SenderType senderType) {
         this.messageId = messageId;
         this.timeStamp = timeStamp;
+        this.senderId = senderId;
+        this.senderType = senderType;
     }
 
     public long getMessageId() {
@@ -26,29 +28,15 @@ public abstract class AbstractMessage {
         return timeStamp;
     }
 
+    /***
+     * A sender ID, another node cannot forge another's sender ID, as it's assumed to be signed by the sender. This is a prototype
+     * @return Returns the sender's ID
+     */
     public Long getSenderId() {
         return senderId;
     }
 
-    /**
-     * Assumption only the network can set this in this test, normally each sender would sign their request?
-     *
-     * @param senderId The ID of the device sending the message, should normally be done via signature so you can prove which device sent it
-     */
-    public void setSenderId(Long senderId) {
-        this.senderId = senderId;
-    }
-
     public SenderType getSenderType() {
         return senderType;
-    }
-
-    /**
-     * Assumption only the network can set this, normally set by each sender with a signature to confirm it came from them
-     *
-     * @param senderType The type of device sending this message
-     */
-    public void setSenderType(SenderType senderType) {
-        this.senderType = senderType;
     }
 }

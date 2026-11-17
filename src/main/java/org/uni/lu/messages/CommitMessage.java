@@ -1,10 +1,10 @@
 package org.uni.lu.messages;
 
-import java.security.MessageDigest;
+import org.uni.lu.SenderType;
 
 public class CommitMessage extends AbstractReplicaViewMessage {
 
-    public CommitMessage(long messageId, Long timeStamp, Long viewId, Long sequenceNumber, MessageDigest digest, Long replicaId) {
-        super(messageId, timeStamp, viewId, sequenceNumber, digest, replicaId);
+    public CommitMessage(Long messageId, Long timeStamp, Long senderId, SenderType senderType, Long viewId, Long sequenceNumber, String digest, Long replicaId) {
+        super(messageId, timeStamp, senderId, senderType, viewId, sequenceNumber, digest, replicaId);
     }
 }

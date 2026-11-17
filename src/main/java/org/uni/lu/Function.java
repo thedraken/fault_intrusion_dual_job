@@ -18,12 +18,18 @@ public class Function {
     }
 
     public int solve() {
-        switch (functionType) {
-            case ADD:
-                return valueOne + valueTwo;
-            case SUBTRACT:
-                return valueOne - valueTwo;
-        }
-        return 0;
+        return switch (functionType) {
+            case ADD -> valueOne + valueTwo;
+            case SUBTRACT -> valueOne - valueTwo;
+        };
+    }
+
+    /**
+     * Generates a message digest
+     *
+     * @return The hex string for the current message
+     */
+    public String canonical() {
+        return functionType.name() + "|" + valueOne + "|" + valueTwo;
     }
 }
