@@ -1,5 +1,6 @@
 package org.uni.lu;
 
+import org.uni.lu.drones.Drone;
 import org.uni.lu.messages.AbstractMessage;
 
 import java.util.HashMap;

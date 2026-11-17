@@ -1,5 +1,8 @@
 package org.uni.lu;
 
+import org.uni.lu.drones.Behaviour;
+import org.uni.lu.drones.Drone;
+
 import java.util.List;
 import java.util.stream.LongStream;
 
@@ -13,8 +16,12 @@ public class Main {
         long numberOfDrones = faultyDevicesAllowed * 10;
 
         RandomChecker randomChecker = new RandomChecker();
-        List<Drone> drones = LongStream.range(0, numberOfDrones).mapToObj(i -> new Drone(i, randomChecker)).toList();
+        Behaviour honestBehaviour = new Behaviour(Behaviour.BehaviourType.HONEST, randomChecker);
+
+
+        List<Drone> drones = LongStream.range(0, numberOfDrones).mapToObj(i -> new Drone(i, honestBehaviour)).toList();
         Network network = new Network(drones);
+
 
     }
 }
