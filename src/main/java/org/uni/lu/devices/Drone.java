@@ -1,8 +1,9 @@
-package org.uni.lu.drones;
+package org.uni.lu.devices;
 
 import org.uni.lu.AbstractSender;
 import org.uni.lu.SenderType;
-import org.uni.lu.UIView;
+import org.uni.lu.messages.AbstractMessage;
+import org.uni.lu.messages.ClientRequestMessage;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,20 +11,18 @@ import java.util.Set;
 public class Drone extends AbstractSender {
 
     private final Behaviour behaviour;
-    private final Set<UIView> uiViewsReceived;
+    private final Set<AbstractMessage> messagesReceived;
     private Long sequenceCounter;
-    private UIView currentView;
 
     public Drone(Long id, Behaviour startingBehaviour) {
         super(id, SenderType.DRONE);
-        this.uiViewsReceived = new HashSet<>();
+        this.messagesReceived = new HashSet<>();
         this.behaviour = startingBehaviour;
     }
 
-    public int processClientRequest(UIView uiView) {
-        this.currentView = uiView;
-        this.uiViewsReceived.add(uiView);
-        int result = uiView.getClientRequest().getFunction().solve();
+    public int processClientRequest(ClientRequestMessage clientRequestMessage) {
+        this.messagesReceived.add(clientRequestMessage);
+        int result = clientRequestMessage.getFunction().solve();
         return switch (this.behaviour.getBehaviourType()) {
             case HONEST, EQUIVOCATING, RANDOM_VOTES -> result;
             case SILENT ->
@@ -35,7 +34,6 @@ public class Drone extends AbstractSender {
     }
 
     public void setFaultyChance(double value) {
-        assert value >= 0 && value <= 1.0;
         this.behaviour.setFaultyChance(value);
     }
 
@@ -47,13 +45,7 @@ public class Drone extends AbstractSender {
         return sequenceCounter;
     }
 
-    public Set<UIView> getUiViewsReceived() {
-        return uiViewsReceived;
+    public Set<AbstractMessage> getMessagesReceived() {
+        return messagesReceived;
     }
-
-    public UIView getCurrentView() {
-        return currentView;
-    }
-
-
 }

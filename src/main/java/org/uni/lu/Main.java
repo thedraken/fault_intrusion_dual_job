@@ -1,27 +1,31 @@
 package org.uni.lu;
 
-import org.uni.lu.drones.Behaviour;
-import org.uni.lu.drones.Drone;
+import org.uni.lu.devices.Behaviour;
+import org.uni.lu.devices.Client;
+import org.uni.lu.devices.Drone;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-/**
- * Hello world!
- *
- */
+
 public class Main {
+
+    public static final long faultyDevicesAllowed = 1;
+    public static final double faultyChance = 0.5;
+
     static void main(String[] args) {
-        long faultyDevicesAllowed = 3;
-        long numberOfDrones = faultyDevicesAllowed * 10;
+
+        long numberOfDrones = (3 * faultyDevicesAllowed) + 1;
 
         RandomChecker randomChecker = new RandomChecker();
-        Behaviour honestBehaviour = new Behaviour(Behaviour.BehaviourType.HONEST, randomChecker);
 
 
-        List<Drone> drones = LongStream.range(0, numberOfDrones).mapToObj(i -> new Drone(i, honestBehaviour)).toList();
-        Network network = new Network(drones);
+        List<AbstractSender> devices = LongStream.range(0, numberOfDrones)
+                .mapToObj(i -> new Drone(i, new Behaviour(Behaviour.BehaviourType.HONEST, randomChecker)))
+                .collect(Collectors.toList());
+        devices.add(new Client(0L));
 
-
+        Network network = new Network(devices);
     }
 }

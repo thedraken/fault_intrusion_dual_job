@@ -1,13 +1,15 @@
-package org.uni.lu;
+package org.uni.lu.messages;
 
 import org.joda.time.DateTime;
+import org.uni.lu.Function;
+import org.uni.lu.devices.Client;
 
-public class ClientRequest extends AbstractSender {
+public class ClientRequestMessage extends AbstractMessage {
     private final DateTime dateTime;
     private final Function function;
 
-    public ClientRequest(Long clientId, DateTime dateTime, Function function) {
-        super(clientId, SenderType.CLIENT);
+    public ClientRequestMessage(Client client, DateTime dateTime, Function function) {
+        super(client.getId(), dateTime);
         this.dateTime = dateTime;
         this.function = function;
     }

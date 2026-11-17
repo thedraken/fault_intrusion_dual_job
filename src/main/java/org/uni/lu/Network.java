@@ -1,7 +1,8 @@
 package org.uni.lu;
 
-import org.uni.lu.drones.Drone;
+import org.uni.lu.devices.Drone;
 import org.uni.lu.messages.AbstractMessage;
+import org.uni.lu.messages.ReplyMessage;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,15 +10,15 @@ import java.util.List;
 
 public class Network {
 
-    private final HashMap<Drone, LinkedList<AbstractMessage>> queuedMessages;
+    private final HashMap<AbstractSender, LinkedList<AbstractMessage>> queuedMessages;
 
     public Network() {
         this.queuedMessages = new HashMap<>();
     }
 
-    public Network(List<Drone> drones) {
+    public Network(List<AbstractSender> senders) {
         this.queuedMessages = new HashMap<>();
-        drones.forEach(drone -> this.queuedMessages.putIfAbsent(drone, new LinkedList<>()));
+        senders.forEach(sender -> this.queuedMessages.putIfAbsent(sender, new LinkedList<>()));
     }
 
     public void send(AbstractSender fromDevice, Drone sendToDrone, AbstractMessage message) {
@@ -28,7 +29,20 @@ public class Network {
 
     public void broadcast(AbstractSender fromDevice, AbstractMessage message) {
         updateMessageSignature(fromDevice, message);
-        queuedMessages.values().forEach(v -> v.add(message));
+        queuedMessages.forEach((k, v) -> {
+            if (k.getSenderType() == SenderType.DRONE) {
+                v.add(message);
+            }
+        });
+    }
+
+    public void replyToClient(AbstractSender fromDevice, ReplyMessage replyMessage) {
+        updateMessageSignature(fromDevice, replyMessage);
+        queuedMessages.forEach((k, v) -> {
+            if (k.getSenderType().equals(SenderType.CLIENT)) {
+                v.add(replyMessage);
+            }
+        });
     }
 
     private void updateMessageSignature(AbstractSender fromDevice, AbstractMessage message) {
