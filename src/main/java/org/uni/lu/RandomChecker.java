@@ -4,9 +4,17 @@ import java.util.Random;
 
 public class RandomChecker {
 
-    private static final Random random = new Random();
+    private final Random random;
 
-    public static double RandomValue() {
+    public RandomChecker() {
+        random = new Random();
+    }
+
+    public RandomChecker(long seedValue) {
+        random = new Random(seedValue);
+    }
+
+    public double RandomValue() {
         return random.nextDouble();
     }
 }
