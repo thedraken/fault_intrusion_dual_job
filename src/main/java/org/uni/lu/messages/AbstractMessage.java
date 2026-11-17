@@ -1,27 +1,29 @@
 package org.uni.lu.messages;
 
 
-import org.joda.time.DateTime;
 import org.uni.lu.SenderType;
 
 public abstract class AbstractMessage {
 
-    private final long messageId;
-    private final DateTime dateTime;
+    private final Long messageId;
+    /**
+     * A counter that increases to show the passage of time
+     */
+    private final Long timeStamp;
     private Long senderId;
     private SenderType senderType;
 
-    public AbstractMessage(long messageId, DateTime dateTime) {
+    public AbstractMessage(Long messageId, Long timeStamp) {
         this.messageId = messageId;
-        this.dateTime = dateTime;
+        this.timeStamp = timeStamp;
     }
 
     public long getMessageId() {
         return messageId;
     }
 
-    public DateTime getDateTime() {
-        return dateTime;
+    public Long getTimeStamp() {
+        return timeStamp;
     }
 
     public Long getSenderId() {

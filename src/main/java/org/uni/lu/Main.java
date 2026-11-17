@@ -11,8 +11,8 @@ import java.util.stream.LongStream;
 
 public class Main {
 
-    public static final long faultyDevicesAllowed = 1;
-    public static final double faultyChance = 0.5;
+    private static final long faultyDevicesAllowed = 1;
+    private static final double faultyChance = 0.5;
 
     static void main(String[] args) {
 
@@ -22,7 +22,7 @@ public class Main {
 
 
         List<AbstractSender> devices = LongStream.range(0, numberOfDrones)
-                .mapToObj(i -> new Drone(i, new Behaviour(Behaviour.BehaviourType.HONEST, randomChecker)))
+                .mapToObj(i -> new Drone(i, new Behaviour(Behaviour.BehaviourType.HONEST, randomChecker, faultyChance)))
                 .collect(Collectors.toList());
         devices.add(new Client(0L));
 

@@ -12,7 +12,7 @@ public class Drone extends AbstractSender {
 
     private final Behaviour behaviour;
     private final Set<AbstractMessage> messagesReceived;
-    private Long sequenceCounter;
+    private Long sequenceCounter = 0L;
 
     public Drone(Long id, Behaviour startingBehaviour) {
         super(id, SenderType.DRONE);
@@ -31,10 +31,6 @@ public class Drone extends AbstractSender {
                     -1;
             case WRONG_RESULT -> this.behaviour.returnFaultyResult(result);
         };
-    }
-
-    public void setFaultyChance(double value) {
-        this.behaviour.setFaultyChance(value);
     }
 
     public void updateBehaviour(Behaviour.BehaviourType behaviourType) {

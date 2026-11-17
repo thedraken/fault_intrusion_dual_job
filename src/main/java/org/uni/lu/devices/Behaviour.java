@@ -1,6 +1,5 @@
 package org.uni.lu.devices;
 
-import org.uni.lu.Main;
 import org.uni.lu.RandomChecker;
 
 import java.util.Objects;
@@ -8,11 +7,13 @@ import java.util.Objects;
 public class Behaviour {
     private final RandomChecker randomChecker;
     private double faultyChance;
+    private final double globalFaultyChance;
     private BehaviourType behaviourType;
 
-    public Behaviour(BehaviourType behaviourType, RandomChecker randomChecker) {
+    public Behaviour(BehaviourType behaviourType, RandomChecker randomChecker, double globalFaultyChance) {
         this.behaviourType = behaviourType;
         this.randomChecker = randomChecker;
+        this.globalFaultyChance = globalFaultyChance;
     }
 
     public BehaviourType getBehaviourType() {
@@ -22,7 +23,7 @@ public class Behaviour {
     public void setBehaviourType(BehaviourType behaviourType) {
         this.behaviourType = behaviourType;
         if (Objects.requireNonNull(behaviourType) == BehaviourType.WRONG_RESULT) {
-            this.faultyChance = Main.faultyChance;
+            this.faultyChance = globalFaultyChance;
         } else {
             this.faultyChance = 0;
         }
@@ -36,17 +37,6 @@ public class Behaviour {
             return (int) (randomChecker.RandomValue() * 100);
         }
         return realResult;
-    }
-
-    public void setFaultyChance(double faultyChance) {
-        if (faultyChance >= 0 && faultyChance <= 1.0) {
-            if (faultyChance > 0) {
-                this.behaviourType = BehaviourType.WRONG_RESULT;
-            }
-            this.faultyChance = faultyChance;
-        } else {
-            throw new IllegalArgumentException("Faulty chance can only be between 0 and 1.0, but received " + faultyChance);
-        }
     }
 
     public enum BehaviourType {
